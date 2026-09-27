@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafaf9;
+  --foreground: #1c1917;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0c0a09;
+    --foreground: #f5f5f4;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+@layer components {
+  .input {
+    @apply block w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base outline-none placeholder:text-stone-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-stone-700 dark:bg-stone-900;
+  }
+  .btn-primary {
+    @apply rounded-xl bg-indigo-600 px-4 py-2.5 font-medium text-white transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply rounded-xl bg-stone-200 px-4 py-2.5 font-medium text-stone-800 transition hover:bg-stone-300 active:scale-[0.98] disabled:opacity-50 dark:bg-stone-800 dark:text-stone-100 dark:hover:bg-stone-700;
+  }
+}
+
+/* Markdown in AI replies */
+.prose-chat p { margin: 0.5em 0; }
+.prose-chat ul { list-style: disc; padding-left: 1.4em; margin: 0.5em 0; }
+.prose-chat ol { list-style: decimal; padding-left: 1.4em; margin: 0.5em 0; }
+.prose-chat li { margin: 0.2em 0; }
+.prose-chat h1, .prose-chat h2, .prose-chat h3 { font-weight: 600; margin: 0.9em 0 0.4em; }
+.prose-chat h1 { font-size: 1.25em; }
+.prose-chat h2 { font-size: 1.125em; }
+.prose-chat a { color: #4f46e5; text-decoration: underline; }
+.prose-chat code { font-size: 0.9em; background: rgb(120 113 108 / 0.15); padding: 0.1em 0.3em; border-radius: 0.3em; }
+.prose-chat pre { background: rgb(120 113 108 / 0.15); padding: 0.75em; border-radius: 0.6em; overflow-x: auto; }
+.prose-chat pre code { background: none; padding: 0; }
+.prose-chat blockquote { border-left: 3px solid rgb(120 113 108 / 0.4); padding-left: 0.8em; color: rgb(120 113 108); }
