@@ -13,8 +13,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: { signIn: "/" },
   callbacks: {
     signIn({ profile }) {
-      if (!profile?.email || profile.email_verified === false) return false;
-      if (allowed.length && !allowed.includes(profile.email.toLowerCase())) return false;
+      if (!profile?.email || profile.email_verified === false) {
+        console.warn("Sign-in rejected: missing or unverified email");
+        return false;
+      }
+      if (allowed.length && !allowed.includes(profile.email.toLowerCase())) {
+        // Logged so a locked-out user is diagnosable from `fly logs`.
+        console.warn(`Sign-in rejected: ${profile.email} is not in ALLOWED_EMAILS`);
+        return false;
+      }
       return true;
     },
     jwt({ token, profile }) {
