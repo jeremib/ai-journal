@@ -49,13 +49,13 @@ export async function POST(req: Request, { params }: Ctx) {
     await fs.writeFile(uploadPath(fileName), Buffer.from(await file.arrayBuffer()));
 
     let transcript = String(form.get("transcript") ?? "").trim();
+    // Best-effort: a transcription failure must never lose the recording. The
+    // browser's live transcript (when there is one) stands in for the server's.
+    let notice: string | undefined;
     if (transcriptionEnabled()) {
-      try {
-        const serverTranscript = await transcribe(file, fileName);
-        if (serverTranscript) transcript = serverTranscript;
-      } catch (err) {
-        console.error(err);
-      }
+      const result = await transcribe(file, fileName);
+      if (result.text) transcript = result.text;
+      else if (result.warning && !transcript) notice = result.warning;
     }
 
     const entry = insertEntry({
@@ -67,7 +67,8 @@ export async function POST(req: Request, { params }: Ctx) {
       file_name: fileName,
       mime,
     });
-    return NextResponse.json(entry, { status: 201 });
+    // `notice` is transient UI feedback, not part of the stored entry.
+    return NextResponse.json(notice ? { ...entry, notice } : entry, { status: 201 });
   }
 
   const data = (await req.json().catch(() => ({}))) as { type?: string; title?: string; body?: string; url?: string };

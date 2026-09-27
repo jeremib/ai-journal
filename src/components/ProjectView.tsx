@@ -28,6 +28,8 @@ export default function ProjectView({
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
+  // Transient feedback from the last save (e.g. a recording too large to transcribe).
+  const [notice, setNotice] = useState<string | null>(null);
 
   const saveProject = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +99,20 @@ export default function ProjectView({
               project.description && <p className="mb-4 text-sm text-stone-600 dark:text-stone-400">{project.description}</p>
             )}
 
+            {notice && (
+              <div className="mb-4 flex items-start gap-3 rounded-2xl bg-amber-50 px-3 py-2 text-sm text-amber-900 ring-1 ring-amber-200 dark:bg-amber-950 dark:text-amber-200 dark:ring-amber-900">
+                <p className="flex-1">{notice}</p>
+                <button
+                  type="button"
+                  aria-label="Dismiss"
+                  className="shrink-0 font-medium text-amber-700 hover:underline dark:text-amber-300"
+                  onClick={() => setNotice(null)}
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+
             {entries.length === 0 ? (
               <div className="py-16 text-center text-stone-500">
                 <p className="text-lg font-medium text-stone-700 dark:text-stone-300">Start your journal</p>
@@ -131,8 +147,9 @@ export default function ProjectView({
           mode={mode}
           projectId={project.id}
           onClose={() => setMode(null)}
-          onSaved={(e) => {
+          onSaved={(e, saveNotice) => {
             setEntries((list) => [e, ...list]);
+            setNotice(saveNotice ?? null);
             setMode(null);
           }}
         />

@@ -43,7 +43,7 @@ export default function Recorder({
 }: {
   kind: Kind;
   projectId: string;
-  onSaved: (e: Entry) => void;
+  onSaved: (e: Entry, notice?: string) => void;
   onCancel: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
@@ -217,8 +217,12 @@ export default function Recorder({
     form.append("body", notes);
     form.append("transcript", transcript);
     try {
-      const entry = await uploadWithProgress<Entry>(`/api/projects/${projectId}/entries`, form, setProgress);
-      onSaved(entry);
+      const { notice, ...entry } = await uploadWithProgress<Entry & { notice?: string }>(
+        `/api/projects/${projectId}/entries`,
+        form,
+        setProgress,
+      );
+      onSaved(entry, notice);
     } catch (err) {
       setError((err as Error).message);
       setPhase("review");

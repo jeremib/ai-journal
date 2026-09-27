@@ -42,7 +42,7 @@ export default function Composer({
   mode: Mode;
   projectId: string;
   onClose: () => void;
-  onSaved: (e: Entry) => void;
+  onSaved: (e: Entry, notice?: string) => void;
 }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
