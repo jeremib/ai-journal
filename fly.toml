@@ -1,0 +1,31 @@
+# fly.io config for ai-journal
+# SQLite + local uploads live on a single attached volume, so this app runs
+# exactly one machine (no horizontal scaling).
+app = 'jeremib-ai-journal'
+primary_region = 'ewr'
+
+[build]
+
+[env]
+  PORT = '3000'
+  DATA_DIR = '/data'
+  AUTH_TRUST_HOST = 'true'
+  # Canonical origin — without it Auth.js derives callback URLs from the
+  # listen address (0.0.0.0:3000) and Google rejects the redirect.
+  AUTH_URL = 'https://jeremib-ai-journal.fly.dev'
+  MAX_UPLOAD_MB = '200'
+
+[[mounts]]
+  source = 'journal_data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '1gb'

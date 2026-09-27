@@ -1,6 +1,8 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+// Plain .mjs (not .ts) so `next start` needs no TypeScript at runtime — the
+// production image prunes devDependencies, and a .ts config makes Next try to
+// install typescript on boot.
+const nextConfig = {
   serverExternalPackages: ["better-sqlite3"],
   images: { unoptimized: true },
   async headers() {
